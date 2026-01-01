@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="All Test Suite">
+    <listeners>
+        <!-- Add listeners here for reporting -->
+    </listeners>
+    
+    <test name="Android Tests">
+        <parameter name="platformName" value="android"/>
+        <parameter name="uploadApp" value="true"/>
+        <classes>
+            <class name="com.automation.tests.YouTubeMobileTest"/>
+        </classes>
+    </test>
+    
+    <!-- 
+    <test name="iOS Tests">
+        <parameter name="platformName" value="ios"/>
+        <parameter name="uploadApp" value="true"/>
+        <classes>
+            <class name="com.automation.tests.LoginTest"/>
+        </classes>
+    </test> 
+    -->
+</suite>
