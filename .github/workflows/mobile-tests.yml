@@ -32,7 +32,7 @@ jobs:
 
       - name: Start Appium Server
         run: |
-          appium --allow-insecure chromedriver_autodownload &
+          appium --allow-insecure uiautomator2:chromedriver_autodownload &
           sleep 10
 
       - name: Run Android Tests
