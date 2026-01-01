@@ -11,9 +11,8 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <appium.version>8.5.1</appium.version>
+        <appium.version>9.0.0</appium.version>
         <testng.version>7.8.0</testng.version>
-        <selenium.version>4.13.0</selenium.version>
         <log4j.version>2.20.0</log4j.version>
         <extent.version>5.1.1</extent.version>
     </properties>
@@ -24,13 +23,6 @@
             <groupId>io.appium</groupId>
             <artifactId>java-client</artifactId>
             <version>${appium.version}</version>
-        </dependency>
-
-        <!-- Selenium Java (Included in Appium but good to be explicit for utils) -->
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>${selenium.version}</version>
         </dependency>
 
         <!-- TestNG -->
