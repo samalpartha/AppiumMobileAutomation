@@ -12,7 +12,7 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        api-level: [33]
+        api-level: [34] # Android 14
         target: [google_apis]
 
     steps:
@@ -41,9 +41,9 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: arm64-v8a
-          profile: pixel
+          profile: pixel_6
           disable-animations: true
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          emulator-options: -no-snapshot-save -no-window -gpu host -noaudio -no-boot-anim -camera-back none
           script: |
             mvn clean test -DsuiteXmlFile=src/test/resources/testng-smoke.xml -DplatformName=android -DuploadApp=false
 
