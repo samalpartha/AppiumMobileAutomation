@@ -9,11 +9,11 @@ on:
 
 jobs:
   test-android:
-    runs-on: macos-latest # Uses Apple Silicon (ARM) runner
+    runs-on: macos-latest
     strategy:
       matrix:
-        api-level: [29]
-        target: [default]
+        api-level: [33] # Upgrading to Android 13 for better ARM support
+        target: [google_apis] # Google APIs image is often more stable
 
     steps:
       - name: Checkout Code
@@ -33,15 +33,17 @@ jobs:
       - name: Start Appium Server
         run: |
           appium --allow-insecure chromedriver_autodownload &
-          sleep 10 # Wait for server to start
+          sleep 10
 
       - name: Run Android Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
-          arch: arm64-v8a # Changed to ARM architecture for Apple Silicon runner
+          arch: arm64-v8a
           profile: Nexus 6
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             mvn clean test -DsuiteXmlFile=src/test/resources/testng-smoke.xml -DplatformName=android -DuploadApp=false
 
