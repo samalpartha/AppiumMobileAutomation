@@ -12,8 +12,8 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        api-level: [33] # Upgrading to Android 13 for better ARM support
-        target: [google_apis] # Google APIs image is often more stable
+        api-level: [30] # Using API 30 (Android 11) - heavily cached and stable on runners
+        target: [default] # 'default' image is smaller and faster to download than google_apis
 
     steps:
       - name: Checkout Code
