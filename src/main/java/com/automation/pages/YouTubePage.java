@@ -31,18 +31,23 @@ public class YouTubePage extends BasePage {
         sendKeys(searchInput, query);
 
         if (driver instanceof AndroidDriver) {
-            ((AndroidDriver) driver).pressKey(new KeyEvent(AndroidKey.ENTER));
-            // Sometime ENTER doesn't trigger, attempt SEARCH key as well
+            AndroidDriver androidDriver = (AndroidDriver) driver;
+            // More reliable search submission using Editor Action
             try {
-                ((AndroidDriver) driver).pressKey(new KeyEvent(AndroidKey.SEARCH));
-            } catch (Exception ignored) {
+                androidDriver.executeScript("mobile: performEditorAction",
+                        java.util.Collections.singletonMap("action", "search"));
+            } catch (Exception e) {
+                androidDriver.pressKey(new KeyEvent(AndroidKey.ENTER));
+            }
+            if (androidDriver.isKeyboardShown()) {
+                androidDriver.hideKeyboard();
             }
         } else {
             searchInput.sendKeys("\n");
         }
 
         try {
-            Thread.sleep(4000);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
         }
         return this;
@@ -56,17 +61,27 @@ public class YouTubePage extends BasePage {
         By b2 = By.id("com.google.android.youtube:id/thumbnail");
         By b3 = By.xpath("(//android.view.ViewGroup[@clickable='true' and @index > 0])[1]");
         By b4 = By.xpath("//android.widget.ImageView[contains(@content-desc, 'Video')]");
+        By b5 = By.className("android.view.ViewGroup"); // Very generic fallback
 
-        healer.findElement(primary, b1, b2, b3, b4).click();
+        try {
+            healer.findElement(primary, b1, b2, b3, b4, b5).click();
+        } catch (Exception e) {
+            // Debugging: Capture a snippet of page source if everything fails
+            String sourceSnippet = driver.getPageSource();
+            if (sourceSnippet.length() > 2000)
+                sourceSnippet = sourceSnippet.substring(0, 2000);
+            throw new RuntimeException("Test failed to find video results. Page Source Snippet: " + sourceSnippet, e);
+        }
         return this;
     }
 
     private void dismissPopups() {
         // Common YouTube popups on first run: "Update", "Sign In", "Not Now"
-        String[] popupTexts = { "GOT IT", "NOT NOW", "NO THANKS", "SKIP", "CANCEL" };
+        String[] popupTexts = { "GOT IT", "NOT NOW", "NO THANKS", "SKIP", "CANCEL", "Dismiss" };
         for (String text : popupTexts) {
             try {
-                WebElement btn = driver.findElement(By.xpath("//*[contains(@text, '" + text + "')]"));
+                WebElement btn = driver.findElement(
+                        By.xpath("//*[contains(@text, '" + text + "') or contains(@content-desc, '" + text + "')]"));
                 if (btn.isDisplayed())
                     btn.click();
             } catch (Exception ignored) {
