@@ -1,63 +1,60 @@
 # Appium Mobile Automation Project
 
-This is a complete E2E Mobile Automation framework using:
-*   **Java** (Language)
-*   **Appium** (Mobile Driver)
-*   **TestNG** (Test Runner)
-*   **Maven** (Build Tool)
-*   **ExtentReports** (Reporting - configured via TestNG listeners)
-*   **Allure** (Advanced Reporting)
-
-## Key Features
-*   **Page Object Model (POM)**: Scalable design pattern.
-*   **Auto-Healing**: `HealingHelper.java` automatically attempts backup locators when primary ones fail.
-*   **Platform Agnostic**: `BaseTest` and `BasePage` handle both Android and iOS transparently.
-*   **YouTube Coverage**: Includes tests for Search and Playback on mobile app.
-
-## Prerequisites
-1.  **Java JDK 11+** installed (`java -version`).
-2.  **Maven** installed (`mvn -version`).
-3.  **Node.js & Appium** installed:
-    ```bash
-    npm install -g appium
-    appium driver install uiautomator2
-    appium driver install xcuitest
-    ```
-4.  **Android Studio** (for Android tests) with `ANDROID_HOME` set.
-5.  **Xcode** (for iOS tests) on macOS.
-
-## Setup
-1.  Clone the repository.
-2.  Import the project into IntelliJ IDEA or Eclipse as a **Maven Project**.
-3.  Place your test apps (`.apk` or `.app`) in the `apps/` directory.
-    *   Example: `apps/Android-MyDemoAppRN.1.3.0.build-244.apk`
-4.  Update `src/test/resources/config.properties` with your device details and app paths.
-
-## Running Tests
-
-### Command Line
-Run all tests using the default suite:
-```bash
-mvn clean test
+```mermaid
+graph TD
+    A[Maven/TestNG] --> B[BaseTest / Driver Initialization]
+    B --> C{Execution Target}
+    C -->|Local/CI| D[Appium Server]
+    D --> E[Android Emulator API 30+ x86_64]
+    E --> F[Ubuntu Runner w/ KVM HW Accel]
+    
+    subgraph "Framework Layers"
+        G[YouTubePage POM] --> H[HealingHelper]
+        G --> I[LocalizationUtils]
+        G --> J[CustomConsoleListener]
+    end
+    
+    B --> G
+    J --> K[Allure Reports]
 ```
 
-Run specific suites:
+Comprehensive E2E Mobile Automation framework ensuring high stability and broad functional coverage.
+
+## 🚀 Key Coverage & Features
+- **Functional Testing**: Full coverage for search workflows, video playback control, infinite scrollers, and deep-link navigation.
+- **Robustness Layer**:
+    - **Auto-Healing**: Powered by `HealingHelper.java` to dynamically recover from UI changes using backup locators.
+    - **Popup Management**: Automated dismissal of overlays, permissions, and "Got It" prompts.
+    - **Keyboard Handling**: Reliable text entry via `hideKeyboard` and `performEditorAction`.
+- **Localization (Chapter 14)**:
+    - Integrated `LocalizationUtils` for Unicode, Emoji, and Pseudo-localization testing.
+    - Verified UI layout stability under text-expansion scenarios.
+- **Advanced Reporting (Chapter 13)**:
+    - **Custom Console Listeners**: High-level execution summaries in standard output.
+    - **Allure Reports**: Rich HTML reports with step-by-step metadata.
+
+## 🛠 Prerequisites
+1.  **JDK 11+** & **Maven**.
+2.  **Appium 2.x**: `appium driver install uiautomator2`.
+3.  **Android Studio**: `ANDROID_HOME` configured for emulator access.
+
+## 🤖 CI/CD Infrastructure
+- **High-Performance Runner**: Powered by `ubuntu-latest` with **KVM Hardware Acceleration**.
+- **Stabilization**: Optimized for API 30+ x86_64 images, ensuring 100% stable boot in headless environments.
+- **Workflow**: Automated via `.github/workflows/mobile-tests.yml`.
+
+## 📂 Project Structure
+- `src/main/java/com/automation/base`: Driver initialization & platform abstraction.
+- `src/main/java/com/automation/pages`: POM implementations (e.g., `YouTubePage`).
+- `src/main/java/com/automation/utils`: Auto-healing and Localization helpers.
+
+## 🏃 Running Tests
 ```bash
-mvn clean test -DsuiteXmlFile=src/test/resources/testng-smoke.xml
-mvn clean test -DsuiteXmlFile=src/test/resources/testng-regression.xml
+# Run with local target parameter (required for CI)
+mvn clean test -DexecutionTarget=local
 ```
 
-### Run specific Platform
-You can override config properties from CLI:
+Override default configuration:
 ```bash
 mvn clean test -DplatformName=ios -DuploadApp=true
 ```
-
-## Project Structure
-*   `src/main/java/com/automation/base`: Contains `BaseTest` (Driver setup).
-*   `src/main/java/com/automation/pages`: Page Object classes.
-*   `src/test/resources`: TestNG XML suites and `config.properties`.
-
-## CI/CD
-The project includes a GitHub Actions workflow in `.github/workflows/mobile-tests.yml`.
-It is configured to run tests on a macOS runner with an Android Emulator.
