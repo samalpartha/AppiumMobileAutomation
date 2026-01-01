@@ -15,7 +15,8 @@ public class YouTubePage extends BasePage {
     @iOSXCUITFindBy(className = "XCUIElementTypeTextField")
     private WebElement searchInput;
 
-    @AndroidFindBy(xpath = "//android.view.ViewGroup[contains(@content-desc, 'Video')][1]")
+    // Updated locator to be more robust across different YouTube versions/layouts
+    @AndroidFindBy(xpath = "(//android.view.ViewGroup[contains(@content-desc, 'min') or contains(@content-desc, 'ago')])[1]")
     @iOSXCUITFindBy(xpath = "(//XCUIElementTypeCell)[1]")
     private WebElement firstVideo;
 
