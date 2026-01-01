@@ -12,8 +12,8 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        api-level: [30] # Using API 30 (Android 11) - heavily cached and stable on runners
-        target: [default] # 'default' image is smaller and faster to download than google_apis
+        api-level: [34] # Android 14 (UpsideDownCake) - Better HVF support on M1/M2
+        target: [google_apis]
 
     steps:
       - name: Checkout Code
